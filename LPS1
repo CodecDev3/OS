@@ -1,0 +1,158 @@
+Approach 1 :
+#include <iostream>
+#include <vector>
+using namespace std;
+int LinearSearchInsertionSort(vector<int>& arr, int k)
+{
+ for (int i = 1; i < arr.size(); i++) {
+ int key = arr[i];
+ int j = i - 1;
+ while (j >= 0 && arr[j] > key) {
+ arr[j + 1] = arr[j];
+ j--;
+ }
+ arr[j + 1] = key;
+ if (arr[i] == k) {
+ return i + 1;
+ }
+ }
+ return -1;
+}
+int main()
+{
+ int n;
+ cout << "Enter the number of elements: ";
+ cin >> n;
+
+ vector<int> arr(n);
+ cout << "Enter elements: ";
+ for (int i = 0; i < n; i++) {
+ cin >> arr[i];
+ }
+ int k;
+ cout << "Enter the value of k: ";
+ cin >> k;
+ int pos = LinearSearchInsertionSort(arr, k);
+ if (pos == -1) {
+ cout << "Element not found\n";
+ }
+ else {
+ cout << "Position of " << k << " is: " << pos << endl;
+ }
+ return 0;
+}
+********************
+#include <iostream>
+#include <vector>
+using namespace std;
+int BinarySearchInsertionSort(vector<int>& arr, int k)
+{
+ int l = 0, r = arr.size() - 1;
+ int pos = -1;
+ while (l <= r) {
+ int m = l + (r - l) / 2;
+ if (arr[m] == k) {
+ pos = m + 1;
+ break;
+ }
+ else if (arr[m] > k) {
+ r = m - 1;
+ }
+ else {
+ l = m + 1;
+ }
+ }
+ if (pos != -1) {
+ return pos;
+ }
+ for (int i = 1; i < arr.size(); i++) {
+ int key = arr[i];
+ int j = i - 1;
+ while (j >= 0 && arr[j] > key) {
+ arr[j + 1] = arr[j];
+ j--;
+ }
+ arr[j + 1] = key;
+ if (arr[i] == k) {
+ return i + 1;
+ }
+ }
+ return -1;
+}
+int main()
+{
+ int n;
+ cout << "Enter the number of elements: ";
+ cin >> n;
+ vector<int> arr(n);
+ cout << "Enter elements: ";
+ for (int i = 0; i < n; i++) {
+ cin >> arr[i];
+ }
+ int k;
+ cout << "Enter the value of k: ";
+ cin >> k;
+ int pos = BinarySearchInsertionSort(arr, k);
+ if (pos == -1) {
+ cout << "Element not found\n";
+ }
+ else {
+ cout << "Position of " << k << " is: " << pos << endl;
+ }
+ return 0;
+}
+*****************************************************************************************
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+vector<int> arrange_sequence(vector<int> input)
+{
+ vector<int> neg, pos;
+ for (int i = 0; i < input.size(); i++)
+ {
+ if (input[i] < 0)
+ {
+ neg.push_back(input[i]);
+ }
+ else if (input[i] > 0)
+ {
+ pos.push_back(input[i]);
+ }
+ }
+ sort(neg.begin(), neg.end(), greater<int>());
+ sort(pos.begin(), pos.end());
+ if (find(input.begin(), input.end(), 0) != input.end())
+ {
+ if (neg.size() > 0)
+ {
+ neg.push_back(0);
+ }
+ else
+ {
+ pos.insert(pos.begin(), 0);
+ }
+ }
+ neg.insert(neg.end(), pos.begin(), pos.end());
+ return neg;
+}
+int main()
+{
+ int n;
+ cout << "Enter the size of the array: ";
+ cin >> n;
+ vector<int> input(n);
+ cout << "Enter the elements of the array: ";
+ for (int i = 0; i < n; i++)
+ {
+ cin >> input[i];
+ }
+ vector<int> output = arrange_sequence(input);
+ cout << "The arranged sequence is: ";
+ for (int i = 0; i < output.size(); i++)
+ {
+ cout << output[i] << " ";
+ }
+ cout << endl;
+ return 0;
+}
