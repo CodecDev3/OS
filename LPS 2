@@ -1,0 +1,239 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#define ARRAY_MAX 100
+#define MAX 999999
+int main()
+{
+ int array[ARRAY_MAX],i,j,flag=0;
+ srand(time(NULL));
+ for (i = 0; i < ARRAY_MAX; ++i)
+ array[i]=rand()%ARRAY_MAX+1;
+ printf("\n................The Unsorted array:..............\n");
+ for(i=0; i < ARRAY_MAX; i++)
+ printf("%d ,",array[i] );
+ merge_sort(array , 0 , ARRAY_MAX-1);
+ printf("\n..................After Merge_Sort................\n");
+ for(i=0; i < ARRAY_MAX; i++ )
+ printf("%d ,",array[i] );
+ for(i = 0; i < ARRAY_MAX; i++)
+ for(j = i+1; j < ARRAY_MAX; j++)
+ if (array[i] > array[j])
+ flag = 1;
+ if (flag==1)
+ printf("Error\n");
+ else
+ printf("No Error\n");
+}
+merge_sort(int array[] , int index_low , int index_high)
+{
+ int index_mid;
+ if(index_low < index_high)
+ {
+ index_mid=(index_high + index_low ) / 2 ;
+ merge_sort(array , index_low , index_mid);
+ merge_sort(array , index_mid + 1 , index_high);
+ merge(array , index_low , index_mid , index_high );
+ }
+}
+merge(int array[], int index_low , int index_mid , int index_high)
+{
+ int i, j,k;
+ int n1 = index_mid - index_low + 1;
+ int n2 = index_high - index_mid ;
+ int left_array[n1], right_array[n2];
+ for (i = 0; i < n1; ++i)
+ left_array[i] = array[index_low + i]; //copy from index_low to index_mid
+ for (j = 0; j < n2; ++j)
+ right_array[j] = array[index_mid + 1 + j ]; //copy from index_mid+1 to index_high
+ for(k = index_low , i=j=0; k <= index_high; ++k )
+ {
+ if(i == n1)
+ array[k] = right_array[j++];
+ else if(j == n2)
+ array[k] = left_array[i++];
+ else if(left_array[i] <= right_array[j])
+ array[k]=left_array[i++];
+ else array[k]=right_array[j++];
+ }
+}
+**********************************************************************************************
+
+#include <iostream>
+#include <bits/stdc++.h>
+#include <vector>
+using namespace std;
+void merge(vector<int>& arr, int l, int m, int r) {
+vector<int> leftArr(m - l + 1);
+vector<int> rightArr(r - m);
+for (int i = 0; i < leftArr.size(); i++) {
+leftArr[i] = arr[l + i];
+}
+for (int i = 0; i < rightArr.size(); i++) {
+rightArr[i] = arr[m + 1 + i];
+}
+int i = 0, j = 0, k = l;
+while (i < leftArr.size() && j < rightArr.size()) {
+if (leftArr[i] <= rightArr[j]) {
+arr[k] = leftArr[i];
+i++;
+}
+else {
+arr[k] = rightArr[j];
+j++;
+}
+k++;
+}
+while (i < leftArr.size()) {
+arr[k] = leftArr[i];
+i++;
+k++;
+}
+while (j < rightArr.size()) {
+arr[k] = rightArr[j];
+j++;
+k++;
+}
+}
+void mergeSort(vector<int> &elements, int left, int right)
+{
+int mid;
+// When there is only one element in the array
+if(left==right)
+return;
+if(right-left==1){
+if(elements[left]>elements[right])
+swap(elements[left] , elements[right]);
+}
+if(right-left==2){
+if(elements[left]>elements[left+1])
+swap(elements[left] , elements[left+1]);
+if(elements[left+1]>elements[left+2])
+swap(elements[left+1],elements[left+2]);
+if(elements[left]>elements[left+2])
+swap(elements[left] , elements[left+2]);
+}
+// Find mid of the array
+mid = (left+right)/2;
+// call mergesort for left subarray
+mergeSort(elements,left,mid);
+// call mergesort for right subarray
+mergeSort(elements,mid+1,right);
+// merge the sorted left and right subarray
+merge(elements,left,mid,right);
+}
+int main() {
+int n,i,ele;
+vector<int> arr;
+cin>>n;
+for(i=0;i<n;i++)
+{
+cin>>ele;
+arr.push_back(ele);
+}
+mergeSort(arr, 0, arr.size() - 1);
+for (int i = 0; i < arr.size(); i++) {
+cout << arr[i] << " ";
+}
+cout << endl;
+return 0;
+}
+
+******************************************************************************************************
+
+#include <iostream>
+#include <vector>
+#include <ctime>
+using namespace std;
+vector<int> merge(vector<int> left_subarray, vector<int> right_subarray)
+{
+ vector<int> merged_array;
+ int left_index = 0;
+ int right_index = 0;
+ while (left_index < left_subarray.size() && right_index < right_subarray.size())
+ {
+ if (left_subarray[left_index] < right_subarray[right_index])
+ {
+ merged_array.push_back(left_subarray[left_index]);
+ left_index++;
+ }
+ else
+ {
+ merged_array.push_back(right_subarray[right_index]);
+ right_index++;
+ }
+ }
+ while (left_index < left_subarray.size())
+ {
+ merged_array.push_back(left_subarray[left_index]);
+ left_index++;
+ }
+ while (right_index < right_subarray.size())
+ {
+ merged_array.push_back(right_subarray[right_index]);
+ right_index++;
+ }
+ return merged_array;
+}
+vector<int> insertion_sort(vector<int> array)
+{
+ for (int i = 1; i < array.size(); i++)
+ {
+ int current_value = array[i];
+ int j = i - 1;
+ while (j >= 0 && array[j] > current_value)
+ {
+ array[j + 1] = array[j];
+ j--;
+ }
+ array[j + 1] = current_value;
+ }
+ return array;
+}
+vector<int> merge_sort_insertion(vector<int> array)
+{
+ if (array.size() <= 1)
+ {
+ return array;
+ }
+ else
+ {
+ int mid = array.size() / 2;
+ vector<int> left_subarray(array.begin(), array.begin() + mid);
+ vector<int> right_subarray(array.begin() + mid, array.end());
+ left_subarray = merge_sort_insertion(left_subarray);
+ right_subarray = insertion_sort(right_subarray);
+ return merge(left_subarray, right_subarray);
+ }
+}
+int main()
+{
+ int n;
+ cout << "Enter the number of elements in the array: ";
+ cin >> n;
+ vector<int> array(n);
+ cout << "Enter " << n << " integers:" << endl;
+ for (int i = 0; i < n; i++)
+ {
+ cin >> array[i];
+ }
+ clock_t start_time = clock();
+ vector<int> sorted_array = merge_sort_insertion(array);
+ clock_t end_time = clock();
+ double time_taken = double(end_time - start_time) / double(CLOCKS_PER_SEC) * 1000000;
+ cout << "Time taken by merge-sort with insertion-sort optimization: " << time_taken << "
+microseconds" << endl;
+ cout << "Original array: ";
+ for (int i = 0; i < array.size(); i++)
+ {
+ cout << array[i] << " ";
+ }
+ cout << endl;
+ cout << "Sorted array: ";
+ for (int i = 0; i < sorted_array.size(); i++)
+ {
+ cout << sorted_array[i] << " ";
+ }
+ cout << endl;
+ return 0;
+}
